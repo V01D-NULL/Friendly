@@ -49,8 +49,9 @@ create_initial_mapping:
     ret
 
 NoLongMode:
-    mov ebx, 0xb8000
-    add ebx, 'L'
-    mov [0xb8000+4], ebx
+    mov esi, NoLongModeStr
+    call puts
     hlt
     jmp $
+
+NoLongModeStr: db "Long mode is not supported on this CPU, refusing to boot", 0
