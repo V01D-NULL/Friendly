@@ -41,21 +41,6 @@ stage1_load:
     int 0x13
     jc disk_error
     
-    cli
-    lgdt [gdtptr]
-
-    mov eax, cr0
-    or eax, 1
-    mov cr0, eax
-
-    mov ax, SEG_DS
-    mov ds, ax
-    mov fs, ax
-    mov gs, ax
-    mov es, ax
-    mov ss, ax
-    jmp SEG_CS:pm
-
 bits 32
 pm:
     jmp stage2_load

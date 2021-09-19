@@ -20,5 +20,23 @@ gdtptr:
     dw _gdt - gdt - 1
     dq gdt
 
+%macro switch32 1
+    cli
+    lgdt [gdtptr]
+
+    mov eax, cr0
+    or eax, 1
+    mov cr0, eax
+
+    mov ax, SEG_DS
+    mov ds, ax
+    mov fs, ax
+    mov gs, ax
+    mov es, ax
+    mov ss, ax
+    jmp SEG_CS:%1
+%endmacro
+
+
 SEG_CS equ __cs - gdt
 SEG_DS equ __ds - gdt

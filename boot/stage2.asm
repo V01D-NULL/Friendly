@@ -1,5 +1,8 @@
-bits 32
 stage2_load:
+  switch32 .pm
+
+  bits 32
+  .pm:
   cld
   call vga_init
   
