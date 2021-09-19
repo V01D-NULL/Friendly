@@ -41,10 +41,9 @@ stage1_load:
     int 0x13
     jc disk_error
     
-bits 32
+
 pm:
     jmp stage2_load
-
     jmp $
 
 bits 16
