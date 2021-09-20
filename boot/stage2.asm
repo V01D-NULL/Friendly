@@ -25,4 +25,4 @@ ivtptr:
     dd 0
 
 
-bootloader_msg: db "(Friendly) Version: b0c4dc2", 0
+bootloader_msg: db "(Friendly) Version: dfb2f69", 0

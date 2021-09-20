@@ -69,7 +69,7 @@ no_bios_extensions_err: db "Could not detect BIOS extensions, refusing to boot",
 
 %include "boot/handover.asm"
 %include "boot/rm/print16.asm"
-%include "boot/gdt32.asm"
+%include "boot/pm/gdt32.asm"
 
 times 510-($-$$) db 0
 dw 0xaa55
