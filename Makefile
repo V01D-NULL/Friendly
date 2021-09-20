@@ -1,18 +1,24 @@
 AS = nasm
 RMFLAGS = -f bin
-BOOTBIN = bootcode.bin
-STAGE2  = boot/stage2/stage2.bin.temp
 FRIENDLY = friendly.bin
 ISO = Friendly.iso
+BRANCH_HASH = $(shell git rev-parse main | head -c 7)
 
 all: $(ISO)
-	@printf "Built friendly\n";
+	@printf "(OK) Built friendly\n";
 
-$(ISO):
+write_git_hash:
+	@$(shell head -n -1 boot/stage2.asm > boot/stage2.asm.temp)
+	@rm boot/stage2.asm
+	@mv boot/stage2.asm.temp boot/stage2.asm
+	@echo 'bootloader_msg: db "(Friendly) Version: $(BRANCH_HASH)", 0' >> boot/stage2.asm
+
+$(ISO): write_git_hash
 	$(AS) $(RMFLAGS) boot/stage1.asm -o $(FRIENDLY)
 	rm -rf iso || echo ""
 	mkdir iso
 	truncate $(FRIENDLY) -s 1200k
+	touch iso/kernel.elf
 	cp $(FRIENDLY) iso/
 	mkisofs -b $(FRIENDLY) -o iso/$@ iso/
 

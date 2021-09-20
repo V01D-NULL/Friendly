@@ -1,3 +1,6 @@
+%ifndef GDT_32
+%define GDT_32
+
 gdt:
     dq 0
 __cs:
@@ -40,3 +43,5 @@ gdtptr:
 
 SEG_CS equ __cs - gdt
 SEG_DS equ __ds - gdt
+
+%endif

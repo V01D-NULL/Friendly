@@ -30,8 +30,14 @@ bootdrive:
     db 0x0
 
 stage1_load:
-    ; Load second stage from disk
-    mov bx, stage2_load
+    ; Check for BIOS extensions
+    mov ah, 0x41
+    mov bx, 0x55aa
+    int 0x13
+    jc no_bios_extensions
+
+    ; Load extended realmode code from disk
+    mov bx, extended
     mov ah, 0x02
     mov al, 2
     mov ch, 0
@@ -41,27 +47,25 @@ stage1_load:
     int 0x13
     jc disk_error
     
-    call fill_handover
-    jmp stage2_load
+    jmp extended
     jmp $
 
 
 bits 16
-read_disk:
-    pusha
-    
-    int 0x13
-    jc disk_err
-    popa
-    ret
-
 disk_error:
     mov si, disk_err
     call easy_print
     hlt
     jmp $
 
+no_bios_extensions:
+    mov si, no_bios_extensions_err
+    call easy_print
+    hlt
+    jmp $
+
 disk_err: db "Error reading from disk", 0
+no_bios_extensions_err: db "Could not detect BIOS extensions, refusing to boot", 0
 
 %include "boot/handover.asm"
 %include "boot/rm/print16.asm"
@@ -70,4 +74,9 @@ disk_err: db "Error reading from disk", 0
 times 510-($-$$) db 0
 dw 0xaa55
 
+extended:
+    call fill_handover
+    switch32 stage2_load
+    jmp $
+    
 %include "boot/stage2.asm"
