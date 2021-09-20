@@ -9,6 +9,9 @@ stage2_load:
   mov esi, pmmode
   call puts
 
+  ; This would be important boot info such as a memory map and be passed to the kernel
+  mov eax, [Handover.value]
+
   jmp $
 
 pmmode: db "(Friendly) Loaded stage2", 0

@@ -41,10 +41,10 @@ stage1_load:
     int 0x13
     jc disk_error
     
-
-pm:
+    call fill_handover
     jmp stage2_load
     jmp $
+
 
 bits 16
 read_disk:
@@ -63,6 +63,7 @@ disk_error:
 
 disk_err: db "Error reading from disk", 0
 
+%include "boot/handover.asm"
 %include "boot/rm/print16.asm"
 %include "boot/gdt32.asm"
 
