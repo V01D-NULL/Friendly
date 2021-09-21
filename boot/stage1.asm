@@ -39,7 +39,7 @@ stage1_load:
     ; Load extended realmode code from disk
     mov bx, extended
     mov ah, 0x02
-    mov al, 2
+    mov al, 4
     mov ch, 0
     mov dh, 0
     mov cl, 2
@@ -67,9 +67,9 @@ no_bios_extensions:
 disk_err: db "Error reading from disk", 0
 no_bios_extensions_err: db "Could not detect BIOS extensions, refusing to boot", 0
 
-%include "boot/handover.asm"
-%include "boot/rm/print16.asm"
-%include "boot/pm/gdt32.asm"
+%include "handover.asm"
+%include "rm/print16.asm"
+%include "pm/gdt32.asm"
 
 times 510-($-$$) db 0
 dw 0xaa55

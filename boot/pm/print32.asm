@@ -11,24 +11,44 @@ vga_init:
     ret
 
 %macro puts 1
-    jmp %%doprint
+    jmp %%do_print
     %%string: db "(Friendly) ", %1, 0
     
-    %%doprint:
+    %%do_print:
     mov esi, %%string
+    mov ch, 0x0F ; White on black
     call _puts
+%endmacro
+
+%macro panic 1
+    jmp %%do_print
+    %%string: db "(Panic) ", %1, 0
+    %%halted: db "Halted CPU", 0
+    %%do_print:
+        mov esi, %%string
+        mov ch, 0x40 ; Red on black
+        call _puts
+        
+        mov esi, %%halted
+        call _puts
+        hlt
+        jmp $
+    
 %endmacro
 
 ; Parameters:
 ; si = string
-_puts:    
+_puts:
+    pusha
+    xor eax, eax
+
     mov edi, [offset]
     .loop:
         lodsb
         cmp al, 0
         je .done
 
-        or ah, 0xF ; Color: White on black
+        or ah, ch ; Set color
         mov [edi], ax
         add edi, 2
         inc word [cursor_x]
@@ -36,6 +56,7 @@ _puts:
         jmp .loop
 
     .done:
+        popa
         call putln
         ret
 

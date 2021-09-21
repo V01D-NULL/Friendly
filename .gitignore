@@ -1,2 +1,4 @@
 *.bin
 iso/*
+*.o
+*.elf

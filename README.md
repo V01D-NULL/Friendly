@@ -10,7 +10,8 @@ How would it boot: (Note: This hasn't been implemented yet, it's a just gameplan
     
 - Load and execute a kernel's elf file
     
-- Support 64 bit kernels only (maybe 32 for the start)
+- Support 32 bit kernels only
 
-### Features:
-- It can't do anything yet, I just started this :^)
+### Screenshots:
+- An attempt to load a 64 bit kernel
+<img src="demo/64-bit-elf.png">
