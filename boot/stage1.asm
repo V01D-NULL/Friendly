@@ -30,12 +30,6 @@ bootdrive:
     db 0x0
 
 stage1_load:
-    ; Check for BIOS extensions
-    mov ah, 0x41
-    mov bx, 0x55aa
-    int 0x13
-    jc no_bios_extensions
-
     ; Load extended realmode code from disk
     mov bx, extended
     mov ah, 0x02
