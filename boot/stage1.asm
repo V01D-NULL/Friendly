@@ -52,14 +52,7 @@ disk_error:
     hlt
     jmp $
 
-no_bios_extensions:
-    mov si, no_bios_extensions_err
-    call easy_print
-    hlt
-    jmp $
-
 disk_err: db "Error reading from disk", 0
-no_bios_extensions_err: db "Could not detect BIOS extensions, refusing to boot", 0
 
 %include "handover.asm"
 %include "rm/print16.asm"
