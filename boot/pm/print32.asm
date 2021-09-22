@@ -10,9 +10,19 @@ vga_init:
     mov [offset], edi
     ret
 
-%macro puts 1
+%macro logwarn 1
     jmp %%do_print
     %%string: db "(Friendly) ", %1, 0
+
+    %%do_print:
+    mov esi, %%string
+    mov ch, 0x0E
+    call _puts
+%endmacro
+
+%macro puts 2
+    jmp %%do_print
+    %%string: db "(Friendly) <", %1, "> ", %2, 0
     
     %%do_print:
     mov esi, %%string
@@ -26,7 +36,7 @@ vga_init:
     %%halted: db "Halted CPU", 0
     %%do_print:
         mov esi, %%string
-        mov ch, 0x40 ; Red on black
+        mov ch, 0x04 ; Red on black
         call _puts
         
         mov esi, %%halted

@@ -4,22 +4,22 @@ ENTRY(entry)
 SECTIONS
 {
     . = 0x10000;
-    .text : ALIGN(4096)
+    .text :
     {
         *(.text)
     }
 
-    .data : ALIGN(4096)
+    .data :
     {
         *(.data)
     }
 
-    .bss : ALIGN(4096)
+    .bss :
     {
         *(.bss)
     }
 
-    .rodata : ALIGN(4096)
+    .rodata :
     {
         *(.rodata)
     }
