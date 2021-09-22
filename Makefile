@@ -13,7 +13,6 @@ $(ISO):
 	rm -rf iso || echo ""
 	mkdir iso
 	truncate $(FRIENDLY) -s 1200k
-	touch iso/kernel.elf
 	cp $(FRIENDLY) iso/
 	mkisofs -b $(FRIENDLY) -o iso/$@ iso/
 
