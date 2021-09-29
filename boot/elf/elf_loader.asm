@@ -3,6 +3,8 @@ section .text
 ELF_MAGIC equ 0x464c457f ; 0x7F ELF encoded in LE format
 PT_LOAD equ 1
 
+%include "pm/memory.asm"
+
 ; Perform basic sanity checks on the elf header and return, panics if there is something wrong with the elf
 verify_elf_header:
     ; Header magic
@@ -64,7 +66,6 @@ elf_load_phdrs:
     mov [elf_found_loadable_phdr], byte 0 ; found_loadable_phdr = false
 
     ; Program header table position (e_phoff)
-    xor eax, eax
     mov eax, dword [elf+28]
     cmp eax, 0
     jne .phdr_exists
@@ -89,7 +90,26 @@ elf_load_phdrs:
         ; Segment is loadable
         puts "load_phdrs", "Found a loadable segment"
         mov [elf_found_loadable_phdr], byte 1 ; Found a loadable segment, this tell's friendly not to panic after it finished parsing all segments
+        
+        ; p_vaddr  = src
+        ; p_offset = dest
+        ; p_filesz = n
+        memcpy dword [ecx + 8], dword [ecx + 4], dword [ecx + 16]
+        
+        ; Caluclate remaining bytes to fill
+        mov esi, dword [ecx + 16] ; p_filesz
+        mov edi, dword [ecx + 20] ; p_memsz
+        sub edi, esi
+        jz .no_bss ; There is nothing to zero out, just load the next header
+        
+        add esi, dword [ecx + 4] ; physical address
+        push ax
+        push ecx
+        memset esi, 0, edi
+        pop ecx
+        pop ax
 
+        .no_bss:
         ; Segment is not loadable, ignore it and try the next
         .segment_not_loadable:
         add [ecx], edx
@@ -107,12 +127,19 @@ elf_load_phdrs:
     ; Loadable headers have been detected, do nothing
     .loadable_headers_detected:
 
+; iterate through all phdrs,
+; find PT_LOAD sections and for each one load from file offset p_offset to address p_vaddr.
+; you need to copy p_filesz bytes and then fill the remaining bytes up to p_memsz with zeroes
+    mov eax, dword [elf_entry_address]
+    jmp eax
+    ; jmp dword [elf_entry_address]
     ret
 
-section .data
+section .rodata
 elf:
     incbin "elf/kernel.elf"
 
+section .data
 elf_phdr_offset:
     dd 0
 
